@@ -1,4 +1,4 @@
-import React ,{useState} from 'react';
+import React ,{useState,useEffect} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,7 +13,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import {useNavigate} from 'react-router-dom'
-import Biblio from './Images/biblio.jpg'
+import Biblio from '../Images/biblio.jpg'
+import axios from 'axios'
+import NavBar from '../Navigation/NavBar'
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -63,32 +65,61 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function FirstPage() {
+export default function SignIn() {
   const classes = useStyles();
-
-  const el = 'daoudafomba2016@gmail.com'
-  const pwd = 'daouda2016'
-  const [email,setEmail] =useState("")
-  const [password,setPassword]= useState("")
 
   const navigate = useNavigate()
 
- 
+  const [email,setEmail] = useState("")
+  const [password,setPassword] = useState("")
+  const [user,setUser] = useState("")
+  const [msg,setMsg] = useState(false) 
+  useEffect(() => {
+              axios.post("http://localhost:8080/api/login",
+              {
+                "login": email,
+                "mdp": password
+              })   
+              .then(value=>setUser(value.data))
+              .catch(e=>{
+                console.log(e);
+              }) 
+         },[email,password])
+  
+  const handleSignIn = (e)=>{
+        e.preventDefault()
+        
+        console.log(user)
+              if(user!== null && user !==undefined && user.role ==="lecteur"){
+                      localStorage.setItem("lecteur",user.idLecteur)
+                      navigate("/home")
+              }
+              else{
+                      setMsg(true)
+              } 
 
-  const handleSignIn =()=>{
-      if(email === el  && password === pwd)
-      {
-          navigate("/home")
-      }
   }
+
   const handleSignUp=()=>{
        navigate("/signup")
   }
-
-
+  
+  
+  const message =()=>{
+     if(msg===true){
+           return(
+            <Typography component="h1" variant="h5">
+                Veuillez saisir les identifiants corrects !!!
+            </Typography>
+           )
+     }
+     
+  }
+  
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
+       <NavBar/>
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
     
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -99,14 +130,18 @@ export default function FirstPage() {
           <Typography component="h1" variant="h5">
             Connexion
           </Typography>
-          <form className={classes.form} noValidate>
+          {
+            message()
+          } 
+           
+          <form className={classes.form}  >
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Addresse Email"
+              label="Addresse Email ou Nom d'utilisateur"
               name="email"
               autoComplete="email"
               autoFocus
@@ -129,12 +164,12 @@ export default function FirstPage() {
               label="Se Rappeller de Moi"
             />
             <Button
-              type="submit"
+              
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClickCapture={()=>handleSignIn()}
+              onClick={(e)=>handleSignIn(e)}
             >
               SE CONNECTER
             </Button>

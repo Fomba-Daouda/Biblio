@@ -77,7 +77,7 @@ function getStepContent(step) {
   }
 }
 
-export default function BorrowDetails() {
+export default function AbonnementDetails() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 

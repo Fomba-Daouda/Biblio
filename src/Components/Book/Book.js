@@ -9,25 +9,40 @@ import Typography from '@material-ui/core/Typography';
 import { useNavigate  } from 'react-router-dom';
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    maxWidth: 100,
+  },
+  card:{
+     height:400,
   },
   cardMedia: {
     paddingTop: '56.25%', 
-    height: 300,
+    height: 250,
   },
-  modal :{
-       height:100,
+  
+  titre:{
+    fontFamily: "Georgia, serif ",
+    fontSize:16,
+    fontWeight:"bold",
   },
+  auteur:{
+    fontFamily: "Georgia, serif ",
+    fontSize:15,
+    fontWeight:"bold",
+  },
+  
 });
 
-export default function Book({image,titre,description}) {
+export default function Book({id,image,titre,auteur}) {
   const classes = useStyles();
   const navigate = useNavigate()
+  
   const handleClickBorrow = () => {
      navigate("/pay")
   };
-
   
+  const handleDetail =()=>{
+      navigate(`/book-detail/${id}`)
+  }
   return (
         
                 <Card className={classes.card}>
@@ -37,25 +52,23 @@ export default function Book({image,titre,description}) {
                     title="Image title"
                   />
                   <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography gutterBottom variant="h5" component="h2" className={classes.titre}>
                       Titre : {titre}
                     </Typography>
-                    <Typography>
-                       Descrption : {description}
+                    <Typography gutterBottom variant="h6" component="h2" className={classes.auteur}>
+                      Auteur : {auteur}
                     </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small" color="primary" >
-                      Plus
-                    </Button>
-                    <Button size="small" color="primary" onClick={handleClickBorrow}>
-                      Emprunter
-                    </Button>
+        
                     
-                    <div>
-      
-      
-              </div>
+                  </CardContent>
+                  <CardActions className={classes.actions}>
+                        <Button size="small" color="primary" onClick={handleDetail}>
+                          Plus
+                        </Button>
+                        <Button size="small" color="primary" onClick={handleClickBorrow}>
+                          Emprunter
+                        </Button>
+                  
                   </CardActions>
                 </Card>
   );
